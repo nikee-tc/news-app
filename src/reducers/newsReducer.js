@@ -22,7 +22,7 @@ export const fetchNews = (page) => {
 
     try {
       let response = await fetch(
-        "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=5c262edcf55c438aa6986a27587940e7"
+       "https://newsapi.org/v2/everything?q=apple&from=2023-11-07&to=2023-11-07&sortBy=popularity&apiKey=5c262edcf55c438aa6986a27587940e7"
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

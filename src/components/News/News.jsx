@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect ,useState } from "react";
+import React, { useEffect ,useState } from "react";
 import Card from "../Card/Card";
  import './News.css'
 import { fetchNews } from "../../reducers/newsReducer"
 import { useSelector, useDispatch } from "react-redux";
-import defaultImg from '../../Images/news.jpeg'
+import defaultImg from '../../Images/news.jpeg';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 //useSelector is used for select specific data from the Redux
 
@@ -17,40 +18,25 @@ function News() {
 
   const showInitialCards = 12;
 
-  const getRandomNews = useCallback(() => {
-    if(news){
-      const shuffledNews = [...news].sort(()=> 0.5 - Math.random());
-      const initialNews = shuffledNews.slice(0, showInitialCards);
-      setArticles(initialNews);
-    }
-  },[news]);
+  const fetchMoreData = () => {
+    setPage((prevPage) => prevPage+1);
+  };
+  useEffect(()=>{
+    dispatch(fetchNews(page))
+  },[dispatch,page]);
 
   useEffect(() => {
-    dispatch(fetchNews(page));  //fetch the news data when page state changes
-  }, [dispatch , page]);
+    if (news) {
+      const newArticles = news.slice(
+        (page - 1) * showInitialCards,
+        page * showInitialCards
+      );
+      setArticles((prevArticles) => [...prevArticles, ...newArticles]);
+    }
+  }, [news, page]); 
 
-useEffect(() => {
-  getRandomNews();
-},[getRandomNews])  
- 
- 
 
-const handleScroll = () =>{
-  if(
-    window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight
-  ){
-    setPage((prevPage) => prevPage + 1);
-  }
-
-};
-
-useEffect(() => {
-window.addEventListener("scroll", handleScroll);
-return() =>{
-  window.removeEventListener("scroll",handleScroll);
-}
-},[]);
-  if (isLoading) {
+  if (isLoading && articles.length === 0)  {
     return <div>Loading...</div>;
   }
   if (error) {
@@ -58,7 +44,12 @@ return() =>{
   }
   return (
    
-
+<InfiniteScroll
+ dataLength={articles.length}
+ next={fetchMoreData}
+ hasMore={true} 
+ loader={<h4>Loading...</h4>}
+>
   
     <div div className="news-item">
    
@@ -76,8 +67,58 @@ return() =>{
         );
       })}
     </div>
-  
+    </InfiniteScroll>
   );
 }
 
+
 export default News;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   const getRandomNews = useCallback(() => {
+//     if(news){
+//       const shuffledNews = [...news].sort(()=> 0.5 - Math.random());
+//       const initialNews = shuffledNews.slice(0, showInitialCards);
+//       setArticles(initialNews);
+//     }
+//   },[news]);
+
+//   useEffect(() => {
+//     dispatch(fetchNews(page));  //fetch the news data when page state changes
+//   }, [dispatch , page]);
+
+// useEffect(() => {
+//   getRandomNews();
+// },[getRandomNews])  
+ 
+ 
+
+// const handleScroll = () =>{
+//   if(
+//     window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight
+//   ){
+//     setPage((prevPage) => prevPage + 1);
+//   }
+
+// };
+
+// useEffect(() => {
+// window.addEventListener("scroll", handleScroll);
+// return() =>{
+//   window.removeEventListener("scroll",handleScroll);
+// }
+// },[]);
