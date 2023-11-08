@@ -1,13 +1,15 @@
-
-import './App.css';
-
-import News from './components/News/News';
+import { Provider } from "react-redux";
+import "./App.css";
+import store from "./store/store";
+import News from "./components/News/News";
 
 function App() {
   return (
-    <div className="App">
-<News/>
-    </div>
+    <Provider store={store}>
+      <div className="App">
+        <News />
+      </div>
+    </Provider>
   );
 }
 

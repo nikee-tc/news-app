@@ -1,22 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect ,useState } from "react";
 import Card from "../Card/Card";
+// import './News.css'
+import { fetchNews } from "../../reducers/newsReducer"
+import { useSelector, useDispatch } from "react-redux";
 
-const News = () => {
-  const [mynews, setMyNews] = useState([]);
+function News() {
+  const dispatch = useDispatch();
+  const { news, isLoading, error } = useSelector((state) => state.news);
 
-  const fetchData = async () => {
-    let response = await fetch(
-      "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=5c262edcf55c438aa6986a27587940e7"
-    );
-    let data = await response.json();
-    setMyNews(data.articles);
-  };
+  const [page,setPage] = useState(1);
+  const[articles,setArticles] = useState([]);
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    dispatch(fetchNews(page));  //fetch the news data when page state changes
+  }, [dispatch , page]);
+
+  //update the articles when news data changes
+  useEffect(() =>{
+    if(news){
+      setArticles((prevArticles) => [...prevArticles , ...news])
+    }
+  },[news])
+  useEffect(() => {
+
+const handleScroll = () =>{
+  if(
+    window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight
+  ){
+    setPage((prevPage) => prevPage + 1);
+  }
+
+};
+
+
+window.addEventListener("scroll", handleScroll);
+return() =>{
+  window.removeEventListener("scroll",handleScroll);
+}
+},[]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
-    <>
-      {mynews.map((ele) => {
+    <div div className="news-item">
+    <h1>Top News </h1>
+      {articles.map((ele) => {
         console.log(ele);
         return (
           <Card
@@ -29,8 +60,8 @@ const News = () => {
           />
         );
       })}
-    </>
+    </div>
   );
-};
+}
 
 export default News;

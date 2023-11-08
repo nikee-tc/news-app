@@ -1,10 +1,11 @@
 import React from "react";
 import "./Card.css";
 
-const Card = ({ title, description, image, source, publishedAt,url }) => {
+const Card = ({ title, description, image, source, publishedAt, url }) => {
   return (
     <>
-      <div className="news-card">
+    <div className="centered-card">
+<div className="news-card">
         {image && <img src={image} alt={title} />}
 
         <h1>{title}</h1>
@@ -16,6 +17,7 @@ const Card = ({ title, description, image, source, publishedAt,url }) => {
             {source} <span> ➔ </span>{" "}
           </a>
         </div>
+      </div>
       </div>
     </>
   );
