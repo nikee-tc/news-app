@@ -3,6 +3,9 @@ import Card from "../Card/Card";
  import './News.css'
 import { fetchNews } from "../../reducers/newsReducer"
 import { useSelector, useDispatch } from "react-redux";
+import defaultImg from '../../Images/news.jpeg'
+
+//useSelector is used for select specific data from the Redux
 
 function News() {
   const dispatch = useDispatch();
@@ -10,6 +13,7 @@ function News() {
 
   const [page,setPage] = useState(1);
   const[articles,setArticles] = useState([]);
+
 
   const showInitialCards = 12;
 
@@ -28,12 +32,7 @@ function News() {
 useEffect(() => {
   getRandomNews();
 },[getRandomNews])  
-  // update the articles when news data changes
-  // useEffect(() =>{
-  //   if(news){
-  //     setArticles((prevArticles) => [...prevArticles , ...news])
-  //   }
-  // },[news])
+ 
  
 
 const handleScroll = () =>{
@@ -58,15 +57,18 @@ return() =>{
     return <div>Error: {error}</div>;
   }
   return (
+   
+
+  
     <div div className="news-item">
    
       {articles.map((ele) => {
         console.log(ele);
         return (
           <Card
-            image={ele.urlToImage}
+            image={ele.urlToImage || defaultImg}
             title={ele.title}
-            description={ele.description}
+            description={ele.description  || "The parent of the autonomous vehicle company is pausing manufacturing of the Origin, a self-driving van that does not have a steering wheel, amid safety concerns."}
             url={ele.url}
             source={ele.source.name}
             publishedAt={ele.publishedAt}
@@ -74,6 +76,7 @@ return() =>{
         );
       })}
     </div>
+  
   );
 }
 
